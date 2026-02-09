@@ -15,7 +15,10 @@ export class LoginPage {
     );
   }
 
-  async login(username, password) {
+  async login() {
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForSelector(this.usernameInput, { timeout: 60000 });
+
     await this.page.fill(this.usernameInput, 'nikita.ramkar+nikita@medarch.com');
     await this.page.fill(this.passwordInput, 'Admin@123');
     await this.page.click(this.loginButton);
@@ -24,6 +27,5 @@ export class LoginPage {
   async verifyLoginSuccess() {
     await this.page.waitForURL(/dashboard/, { timeout: 15000 });
   }
-  
 }
 

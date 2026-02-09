@@ -4,18 +4,23 @@ export class SchedulingPage {
   constructor(page) {
     this.page = page;
 
-    // MUI menus expose menu items with role="menuitem"
-    this.appointmentsMenuItem = page.getByRole('menuitem', {
-      name: 'Appointments',
-    });
+    this.schedulingMenu = page.getByText('Scheduling').first();
 
-    this.availabilityMenuItem = page.getByRole('menuitem', {
-      name: 'Availability',
-    });
+    this.appointmentsMenuItem = page
+      .locator('#menu-appbar')
+      .getByText('Appointments');
+    this.availabilityMenuItem = page
+      .locator('#menu-appbar')
+      .getByText('Availability');
   }
 
   async goToAppointments() {
-    // wait until the menu item is actually visible & clickable
+    await this.appointmentsMenuItem.waitFor({ state: 'visible' });
+    await this.appointmentsMenuItem.click();
+  }
+
+  async goToAppointmentsFromSubPage() {
+    await this.schedulingMenu.click();
     await this.appointmentsMenuItem.waitFor({ state: 'visible' });
     await this.appointmentsMenuItem.click();
   }
@@ -26,10 +31,10 @@ export class SchedulingPage {
   }
 
   async verifyAppointmentsLoaded() {
-    await expect(this.page).toHaveURL(/appointment/);
+    await expect(this.page).toHaveURL(/appointments?/i);
   }
 
   async verifyAvailabilityLoaded() {
-    await expect(this.page).toHaveURL(/availability/);
+    await expect(this.page).toHaveURL(/availability/i);
   }
 }
