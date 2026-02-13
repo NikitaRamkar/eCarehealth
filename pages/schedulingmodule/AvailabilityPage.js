@@ -122,8 +122,19 @@ export class AvailabilityPage {
 
     const date = await this.setStartDate(daysFromToday);
 
+    // Click close button first to clear any existing value
+    const closeButton = this.page.locator('xpath=//p[normalize-space()="Booking Window"]/ancestor::div[contains(@class,"MuiInputBase-root")]//button[@aria-label="Clear"]');
+    try {
+      await closeButton.waitFor({ state: 'visible', timeout: 3000 });
+      await closeButton.click();
+      await this.page.waitForTimeout(500);
+    } catch (e) {
+      // Close button might not be present, continue
+    }
+
     await this.selectBookingWindow('2 Week');
     await this.enableApplyToAllDays();
+    
 
     const { startTime, endTime } = await this.selectTimeSlot(
       '12:00 AM',

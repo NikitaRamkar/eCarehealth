@@ -10,17 +10,26 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto(
-      'https://qa_ambrosia.qa.provider.ecarehealth.com/auth/login'
-    );
+    try {
+      await this.page.goto(
+        'https://stage_catholichealth.uat.provider.ecarehealth.com/auth/login',
+        { 
+          waitUntil: 'domcontentloaded',
+          timeout: 60000 
+        }
+      );
+    } catch (error) {
+      console.error('Error navigating to login page:', error.message);
+      throw error;
+    }
   }
 
   async login() {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector(this.usernameInput, { timeout: 60000 });
 
-    await this.page.fill(this.usernameInput, 'nikita.ramkar+nikita@medarch.com');
-    await this.page.fill(this.passwordInput, 'Admin@123');
+    await this.page.fill(this.usernameInput, 'saurabh.kale+heather@medarch.com');
+    await this.page.fill(this.passwordInput, 'Pass@1234');
     await this.page.click(this.loginButton);
   }
 

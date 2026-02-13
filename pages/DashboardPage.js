@@ -16,6 +16,12 @@ export class DashboardPage {
   async openSchedulingMenu() {
     await this.page.click(this.schedulingTab);
   }
+  
+  async openPatientsTab() {
+    const patientsTab = this.page.getByText('Patients').first();
+    await patientsTab.waitFor({ state: 'visible' });
+    await patientsTab.click();
+  }
 }
 
 

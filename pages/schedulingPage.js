@@ -20,8 +20,9 @@ export class SchedulingPage {
   }
 
   async goToAppointmentsFromSubPage() {
+    await this.schedulingMenu.waitFor({ state: 'visible', timeout: 30000 });
     await this.schedulingMenu.click();
-    await this.appointmentsMenuItem.waitFor({ state: 'visible' });
+    await this.appointmentsMenuItem.waitFor({ state: 'visible', timeout: 10000 });
     await this.appointmentsMenuItem.click();
   }
 

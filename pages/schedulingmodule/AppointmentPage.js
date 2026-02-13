@@ -41,19 +41,50 @@ export class AppointmentPage {
     this.saveAndCloseButton = page.getByRole('button', {
       name: 'Save And Close',
     });
+
+    // ---- Filter/Search (in the left sidebar) ----
+    // Find the "Search By Patient" field - it's near the label "Search By Patient"
+    this.searchByPatientFilter = page.locator('input[placeholder="Search & Select"]')
+      .filter({ has: page.getByText('Search By Patient', { exact: false }).locator('..') })
+      .or(page.locator('label:has-text("Search By Patient") + * input[placeholder*="Search"]'))
+      .or(page.getByPlaceholder('Search & Select').first());
+    
+    // ---- Appointment List ----
+    this.scheduledButton = page.getByRole('button', { name: 'Scheduled' });
   }
 
   // ---- Open New Appointment ----
   async openNewAppointment() {
-    await this.scheduleAppointmentButton.click();
+    // Wait for the appointments page to be ready
+    await this.page.waitForTimeout(2000);
+    
+    // Click the Schedule Appointment button - try multiple selectors
+    let scheduleButton;
+    try {
+      scheduleButton = this.page.getByRole('button', { name: 'Schedule Appointment' });
+      await scheduleButton.waitFor({ state: 'visible', timeout: 10000 });
+    } catch (e) {
+      // Try alternative selector
+      scheduleButton = this.page.getByRole('button', { name: /schedule.*appointment/i });
+      await scheduleButton.waitFor({ state: 'visible', timeout: 10000 });
+    }
+    await scheduleButton.click();
 
-    // Scope to the open menu so we click the right option (avoids stale/hidden state)
-    const menu = this.page.getByRole('menu').or(this.page.getByRole('listbox'));
-    await menu.waitFor({ state: 'visible', timeout: 5000 });
-    const newOption = menu.getByRole('menuitem', { name: /new appointment/i })
-      .or(menu.getByRole('option', { name: /new appointment/i }))
-      .or(menu.getByText(/new appointment/i));
-    await newOption.first().click();
+    // Wait for the menu to appear
+    await this.page.waitForTimeout(1000);
+    
+    // Directly find and click "New Appointment" - don't try to find menu first
+    // The menu item should be visible after clicking the button
+    const newAppointmentOption = this.page.getByRole('menuitem', { name: 'New Appointment', exact: false })
+      .or(this.page.getByRole('menuitem', { name: /new appointment/i }))
+      .or(this.page.getByRole('option', { name: 'New Appointment', exact: false }))
+      .or(this.page.getByRole('option', { name: /new appointment/i }))
+      .or(this.page.locator('li:has-text("New Appointment")'))
+      .or(this.page.getByText('New Appointment', { exact: false }))
+      .first();
+    
+    await newAppointmentOption.waitFor({ state: 'visible', timeout: 10000 });
+    await newAppointmentOption.click();
 
     // Wait for drawer content (patient search only exists in the drawer)
     await expect(this.patientInput).toBeVisible({ timeout: 10000 });
@@ -71,8 +102,45 @@ export class AppointmentPage {
       .first();
     await dropdown.waitFor({ state: 'visible', timeout: 5000 });
     await dropdown.click({ force: true });
-    const listbox = this.page.getByRole('listbox', { name: /appointment type/i });
-    await listbox.getByRole('option', { name: type }).click();
+    
+    // Wait a moment for the listbox to appear
+    await this.page.waitForTimeout(1000);
+    
+    // Wait for listbox to appear - try multiple ways to find it
+    // The listbox might be in a portal/overlay, so search the whole page
+    const listbox = this.page.getByRole('listbox')
+      .or(this.page.locator('[role="listbox"]'))
+      .or(this.page.locator('ul[role="listbox"]'))
+      .first();
+    await listbox.waitFor({ state: 'visible', timeout: 10000 });
+    
+    // Try to find the option - be flexible with matching
+    // The option might be "(ECH1000DF) Followupp" or just "Followupp"
+    // Use .first() to handle multiple matches
+    let option;
+    try {
+      // Try exact match first
+      option = listbox.getByRole('option', { name: type }).first();
+      await option.waitFor({ state: 'visible', timeout: 3000 });
+    } catch (e) {
+      try {
+        // Try regex match (case insensitive)
+        option = listbox.getByRole('option', { name: new RegExp(type, 'i') }).first();
+        await option.waitFor({ state: 'visible', timeout: 3000 });
+      } catch (e2) {
+        try {
+          // Try has-text selector
+          option = listbox.locator(`[role="option"]:has-text("${type}")`).first();
+          await option.waitFor({ state: 'visible', timeout: 3000 });
+        } catch (e3) {
+          // Last resort: find by text anywhere in the option
+          option = listbox.getByText(new RegExp(type, 'i')).first();
+          await option.waitFor({ state: 'visible', timeout: 5000 });
+        }
+      }
+    }
+    
+    await option.click();
   }
 
   async enterChiefComplaint(text = 'Chest pain') {
@@ -135,7 +203,25 @@ export class AppointmentPage {
 
   /** Clicks "Save And Close" to confirm the appointment. */
   async saveAppointment() {
-    await this.saveAndCloseButton.click();
+    // Wait for the button to be visible and try multiple selectors
+    let saveButton;
+    try {
+      saveButton = this.page.getByRole('button', { name: 'Save And Close' });
+      await saveButton.waitFor({ state: 'visible', timeout: 5000 });
+      await saveButton.click();
+    } catch (e) {
+      // Try alternative selectors
+      try {
+        saveButton = this.page.getByRole('button', { name: /save.*close/i });
+        await saveButton.waitFor({ state: 'visible', timeout: 5000 });
+        await saveButton.click();
+      } catch (e2) {
+        // Try finding by text
+        saveButton = this.page.locator('button:has-text("Save And Close")');
+        await saveButton.waitFor({ state: 'visible', timeout: 5000 });
+        await saveButton.click();
+      }
+    }
   }
 
   // ---- FULL FLOW ----
@@ -143,7 +229,7 @@ export class AppointmentPage {
     date,
     startTime, // optional; if omitted, a random available slot is selected each time
     patientName = 'mike simon',
-    appointmentType = 'Followupp',
+    appointmentType = 'Followup',
     complaint = 'Chest pain',
     timezone = 'Eastern Standard Time (GMT -05:00)',
   }) {
@@ -155,5 +241,66 @@ export class AppointmentPage {
     await this.selectVisitType('Telehealth');
     await this.selectSlotFromAvailability(date, startTime);
     await this.saveAppointment();
+  }
+
+  /**
+   * Filters appointments by patient name in the left sidebar
+   * @param {string} patientName - Full name of the patient (e.g., "emma johnson")
+   */
+  async filterByPatient(patientName) {
+    // Find the "Search By Patient" input field more reliably
+    // Look for input near "Search By Patient" label
+    const patientFilterLabel = this.page.getByText('Search By Patient', { exact: false });
+    const patientFilterInput = this.page.locator('input[placeholder*="Search"]')
+      .filter({ has: patientFilterLabel.locator('..') })
+      .or(this.page.locator('label:has-text("Search By Patient") ~ * input'))
+      .or(this.page.getByPlaceholder('Search & Select').first());
+    
+    // Wait for the filter input to be visible
+    await patientFilterInput.waitFor({ state: 'visible', timeout: 10000 });
+    
+    // Clear any existing value and type the patient name
+    await patientFilterInput.click();
+    await patientFilterInput.fill(patientName);
+    
+    // Wait a moment for the dropdown to appear
+    await this.page.waitForTimeout(500);
+    
+    // The patient name in the dropdown might be capitalized (e.g., "Emma Johnson")
+    const capitalizedName = patientName.split(' ').map(name => 
+      name.charAt(0).toUpperCase() + name.slice(1)
+    ).join(' ');
+    
+    // Try to find the patient option - it might be in a listbox or menu
+    // Use .first() to handle cases where multiple options match
+    const patientOption = this.page.getByRole('option', { name: capitalizedName }).first()
+      .or(this.page.getByRole('option', { name: new RegExp(patientName, 'i') }).first())
+      .or(this.page.locator(`[role="option"]:has-text("${capitalizedName}")`).first())
+      .or(this.page.locator(`[role="option"]:has-text("${patientName}")`).first());
+    
+    await patientOption.waitFor({ state: 'visible', timeout: 5000 });
+    await patientOption.click();
+    
+    // Wait for the list to filter and update
+    await this.page.waitForTimeout(1500);
+  }
+
+  /**
+   * Clicks on the "Scheduled" element for the filtered appointment
+   * Note: The "Scheduled" is actually a <p> tag, not a button
+   * After filtering, there should be only one appointment visible
+   */
+  async clickScheduledAppointment() {
+    // Wait a bit more for the filtered list to fully render
+    await this.page.waitForTimeout(2000);
+    
+    // Use XPath to find the Scheduled element: div with role='cell' and data-field='status' containing p with 'Scheduled' text
+    const scheduledElement = this.page.locator('xpath=//div[@role="cell" and @data-field="status"]//p[normalize-space()="Scheduled"]');
+    
+    await scheduledElement.waitFor({ state: 'visible', timeout: 10000 });
+    await scheduledElement.click();
+    
+    // Wait a moment after clicking to ensure the action completes
+    await this.page.waitForTimeout(1000);
   }
 }
