@@ -32,10 +32,11 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-   // trace: 'on-first-retry',
-   headless: false,
+    trace: process.env.CI ? 'on-first-retry' : 'off',
+    /* Run headless in CI, headed locally */
+    headless: !!process.env.CI,
     /* Maximize viewport for better UI visibility */
-    viewport: null,
+    viewport: process.env.CI ? { width: 1280, height: 720 } : null,
   },
 
   /* Configure projects for major browsers */
