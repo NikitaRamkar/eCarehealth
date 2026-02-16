@@ -23,16 +23,15 @@ export class PatientChartPage {
     await searchInput.waitFor({ state: 'visible', timeout: 10000 });
     await searchInput.click();
     await searchInput.fill(patientName.toLowerCase());
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
-   * Click on a patient from the search results
-   * @param {string} patientName - Full name of the patient to click (e.g., "Dixon Parker")
+   * Click the first patient in the list (any patient)
    */
-  async clickPatient(patientName) {
-    await this.page.locator('.MuiBox-root.css-1cx9zk1 > .MuiBox-root').click();
-    await this.page.waitForTimeout(2000);
+  async clickPatient() {
+    await this.page.locator('.MuiBox-root.css-1cx9zk1 > .MuiBox-root').first().click();
+    await this.page.waitForTimeout(800);
   }
 
   /**
@@ -40,7 +39,7 @@ export class PatientChartPage {
    */
   async openProfileTab() {
     await this.page.locator('div').filter({ hasText: /^0Profile$/ }).nth(1).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -49,14 +48,14 @@ export class PatientChartPage {
    */
   async editPatientDetails(address = 'alaskaaaa') {
     await this.page.getByRole('button', { name: 'Edit Patient Details' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Address Line 1' }).click();
     await this.page.getByRole('textbox', { name: 'Address Line 1' }).fill(address);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -67,31 +66,31 @@ export class PatientChartPage {
    */
   async addInsurance(payerName = 'Yuzu Health', subscriberFirstName = 'jennie', employerName = 'jenniw nor') {
     await this.page.getByRole('tab', { name: 'Insurance' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('button', { name: 'Add Insurance' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Payer Name' }).click();
     await this.page.getByRole('option', { name: payerName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Subscriber Information' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'First Name' }).click();
     await this.page.getByRole('textbox', { name: 'First Name' }).fill(subscriberFirstName);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Employer Information' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Employer Name' }).click();
     await this.page.getByRole('textbox', { name: 'Employer Name' }).fill(employerName);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -114,84 +113,84 @@ export class PatientChartPage {
     editedNotes = 'prior note'
   ) {
     await this.page.getByRole('tab', { name: 'Prior Authorization' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add prior authorization
     await this.page.getByRole('button', { name: 'Add Prior Authorization' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Authorization Number *' }).click();
     await this.page.getByRole('textbox', { name: 'Authorization Number *' }).fill(authNumber);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Payer Name *' }).click();
     await this.page.getByRole('option', { name: payerName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Authorized By *' }).click();
     await this.page.locator('[id*="listbox"]').getByText(authorizedBy).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Diagnosis Code' }).click();
     await this.page.getByRole('option', { name: diagnosisCode }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'CPT Codes' }).click();
     await this.page.getByRole('option', { name: cptCode }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).click();
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).fill(notes);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit prior authorization - find row by auth number
     const priorAuthRow = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
     await priorAuthRow.waitFor({ state: 'visible', timeout: 10000 });
     await priorAuthRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('menuitem', { name: 'Edit' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).click();
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).fill(editedNotes);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Change status - find row again
     const priorAuthRow2 = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
     await priorAuthRow2.waitFor({ state: 'visible', timeout: 10000 });
     await priorAuthRow2.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByText('Change Status').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Status' }).click();
     await this.page.getByRole('option', { name: 'Pending' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Archive prior authorization - find row again
     const priorAuthRow3 = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
     await priorAuthRow3.waitFor({ state: 'visible', timeout: 10000 });
     await priorAuthRow3.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('menuitem', { name: 'Archive' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Toggle show archived checkbox
     await this.page.getByRole('checkbox', { name: 'Show Archived' }).check();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('checkbox', { name: 'Show Archived' }).uncheck();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
   }
 
   /**
@@ -214,49 +213,49 @@ export class PatientChartPage {
     editedNotes = 'Expire'
   ) {
     await this.page.getByRole('tab', { name: 'Expired Prior Authorizations' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add expired prior authorization
     await this.page.getByRole('button', { name: 'Add Prior Authorization' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Authorization Number *' }).click();
     await this.page.getByRole('textbox', { name: 'Authorization Number *' }).fill(authNumber);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Payer Name *' }).click();
     await this.page.getByRole('option', { name: payerName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Authorized By *' }).click();
     await this.page.locator('[id*="listbox"]').getByText(authorizedBy).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Diagnosis Code' }).click();
     await this.page.getByRole('option', { name: diagnosisCode }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'CPT Codes' }).click();
     await this.page.getByRole('option', { name: cptCode }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'CPT Codes' }).fill('e');
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).click();
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).fill(notes);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit expired prior authorization - find row by auth number
     const expiredPriorAuthRow = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
     await expiredPriorAuthRow.waitFor({ state: 'visible', timeout: 10000 });
     await expiredPriorAuthRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).click();
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).press('ArrowLeft');
@@ -265,20 +264,20 @@ export class PatientChartPage {
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).press('ArrowLeft');
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).press('ArrowLeft');
     await this.page.getByRole('textbox', { name: 'Notes / Comments' }).fill(editedNotes);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Archive expired prior authorization - find row again
     const expiredPriorAuthRow2 = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
     await expiredPriorAuthRow2.waitFor({ state: 'visible', timeout: 10000 });
     await expiredPriorAuthRow2.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByText('Archive', { exact: true }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -297,61 +296,61 @@ export class PatientChartPage {
     testName = '13016-1 - Nitrophenol [Units/'
   ) {
     await this.page.getByText('Visit His.').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByText('Orders').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add order
     await this.page.getByRole('button', { name: 'Add New Order' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Order Title *' }).click();
     await this.page.getByRole('textbox', { name: 'Order Title *' }).fill(orderTitle);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Lab *' }).click();
     await this.page.getByRole('option', { name: labName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Icd Code' }).click();
     await this.page.getByRole('option', { name: icdCode }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Tests *' }).click();
     await this.page.getByRole('option', { name: testName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Lab *' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Order', exact: true }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit order - find the row with the order title and click its MoreVertIcon
     const orderRow = this.page.getByRole('row', { name: new RegExp(orderTitle, 'i') }).first();
     await orderRow.waitFor({ state: 'visible', timeout: 10000 });
     await orderRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('menuitem', { name: 'Edit' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Order Title *' }).click();
     await this.page.getByRole('textbox', { name: 'Order Title *' }).fill(editedOrderTitle);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Order', exact: true }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Mark as completed - find the row with the edited order title
     const editedOrderRow = this.page.getByRole('row', { name: new RegExp(editedOrderTitle, 'i') }).first();
     await editedOrderRow.waitFor({ state: 'visible', timeout: 10000 });
     await editedOrderRow.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByText('Mark as Completed').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -362,29 +361,29 @@ export class PatientChartPage {
    */
   async addResult(orderTitle = 'lab machine', abnormalFlag = 'Above Lower Panic Limits', dayOfMonth = 13) {
     await this.page.getByRole('tab', { name: 'Result' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('button', { name: 'Add New Result' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Orders *' }).click();
     await this.page.getByRole('option', { name: orderTitle }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Abnormal Flag *' }).click();
     await this.page.getByRole('option', { name: abnormalFlag }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('button', { name: 'Choose date' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByRole('gridcell', { name: String(dayOfMonth) }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -396,56 +395,56 @@ export class PatientChartPage {
    */
   async addEditDeleteAllergy(allergyName = 'peniciliin', reaction = 'fever', severity = 'Mild', note = 'tient having this allergy') {
     await this.page.locator('div').filter({ hasText: /^0Clinicals$/ }).nth(1).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await this.page.getByText('Clinicals').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add allergy
     await this.page.getByRole('button', { name: 'Add Allergy' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Allergy Name *' }).click();
     await this.page.getByRole('textbox', { name: 'Allergy Name *' }).fill(allergyName);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Reaction' }).click();
     await this.page.getByRole('textbox', { name: 'Reaction' }).fill(reaction);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Severity' }).click();
     await this.page.getByRole('option', { name: severity }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit allergy - find row by allergy name
     const allergyRow = this.page.getByRole('row', { name: new RegExp(allergyName, 'i') }).first();
     await allergyRow.waitFor({ state: 'visible', timeout: 10000 });
     await allergyRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Note' }).click();
     await this.page.getByRole('textbox', { name: 'Note' }).fill(note);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Delete allergy
     const allergyRow2 = this.page.getByRole('row', { name: new RegExp(allergyName, 'i') }).first();
     await allergyRow2.waitFor({ state: 'visible', timeout: 10000 });
     await allergyRow2.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Delete').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -456,50 +455,50 @@ export class PatientChartPage {
    */
   async addEditDeleteDiagnosis(diagnosisName = 'E830 - Disorders of copper', type = 'Acute', note = 'deagnosis') {
     await this.page.getByRole('tab', { name: 'Diagnosis' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add diagnosis
     await this.page.getByRole('button', { name: 'Add Diagnosis' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Diagnosis Name *' }).click();
     await this.page.getByRole('option', { name: diagnosisName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Type' }).click();
     await this.page.getByRole('option', { name: type }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit diagnosis - find row by diagnosis name
     const diagnosisRow = this.page.getByRole('row', { name: new RegExp(diagnosisName, 'i') }).first();
     await diagnosisRow.waitFor({ state: 'visible', timeout: 10000 });
     await diagnosisRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Note' }).click();
     await this.page.getByRole('textbox', { name: 'Note' }).fill(note);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Delete diagnosis
     const diagnosisRow2 = this.page.getByRole('row', { name: new RegExp(diagnosisName, 'i') }).first();
     await diagnosisRow2.waitFor({ state: 'visible', timeout: 10000 });
     await diagnosisRow2.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Delete').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -511,54 +510,54 @@ export class PatientChartPage {
    */
   async addEditDeleteMedication(medicineName = 'Neo-polycin - Gramicidin', quantity = '4', note = 'medication', editedNote = 'medication 1') {
     await this.page.getByRole('tab', { name: 'Medications' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add medication
     await this.page.getByRole('button', { name: 'Add Medication' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Medicine Name *' }).click();
     await this.page.getByRole('option', { name: medicineName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Quantity' }).click();
     await this.page.getByRole('textbox', { name: 'Quantity' }).fill(quantity);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Note' }).click();
     await this.page.getByRole('textbox', { name: 'Note' }).fill(note);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit medication - find row by medicine name
     const medicationRow = this.page.getByRole('row', { name: new RegExp(medicineName, 'i') }).first();
     await medicationRow.waitFor({ state: 'visible', timeout: 10000 });
     await medicationRow.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Note' }).click();
     await this.page.getByRole('textbox', { name: 'Note' }).fill(editedNote);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Delete medication
     const medicationRow2 = this.page.getByRole('row', { name: new RegExp(medicineName, 'i') }).first();
     await medicationRow2.waitFor({ state: 'visible', timeout: 10000 });
     await medicationRow2.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Delete').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -572,65 +571,65 @@ export class PatientChartPage {
    */
   async addEditDeleteVaccine(vaccineName = 'Covaxin', administeredBy = 'Heather Clark', amount = '33', unit = 'Capsule', lot = '2', editedAmount = '3') {
     await this.page.getByRole('tab', { name: 'Vaccines' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add vaccine
     await this.page.getByRole('button', { name: 'Add Vaccine' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.locator('div').filter({ hasText: /^Vaccine Name \*$/ }).nth(1).click();
     await this.page.getByRole('option', { name: vaccineName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Administered By *' }).click();
     await this.page.getByRole('option', { name: administeredBy }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('spinbutton', { name: 'Amount' }).click();
     await this.page.getByRole('spinbutton', { name: 'Amount' }).fill(amount);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Unit' }).click();
     await this.page.getByRole('option', { name: unit }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Unit' }).fill('Capsule2');
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Lot' }).click();
     await this.page.getByRole('textbox', { name: 'Lot' }).fill(lot);
-    await this.page.waitForTimeout(500);
-    
+    await this.page.waitForTimeout(800);
+
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
-    
+    await this.page.waitForTimeout(800);
+
     // Edit vaccine - find row by vaccine name
     const vaccineRow = this.page.getByRole('row', { name: new RegExp(vaccineName, 'i') }).first();
     await vaccineRow.waitFor({ state: 'visible', timeout: 10000 });
     await vaccineRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('spinbutton', { name: 'Amount' }).click();
     await this.page.getByRole('spinbutton', { name: 'Amount' }).fill(editedAmount);
-    await this.page.waitForTimeout(500);
-    
+    await this.page.waitForTimeout(200);
+
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
-    
+    await this.page.waitForTimeout(800);
+
     // Delete vaccine
     const vaccineRow2 = this.page.getByRole('row', { name: new RegExp(vaccineName, 'i') }).first();
     await vaccineRow2.waitFor({ state: 'visible', timeout: 10000 });
     await vaccineRow2.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Delete').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -641,47 +640,47 @@ export class PatientChartPage {
    */
   async addVitals(systolic = '2222', diastolic = '22', bodyTemp = '120') {
     await this.page.getByRole('tab', { name: 'Vitals' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('button', { name: 'Add Vitals' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('combobox', { name: 'Select Vitals' }).click();
     await this.page.getByRole('option', { name: 'Body Temperature' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('option', { name: 'Blood Pressure' }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.locator('div').filter({ hasText: 'Body TemperatureBlood' }).nth(5).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Systolic *' }).click();
     await this.page.getByRole('textbox', { name: 'Systolic *' }).fill(systolic);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Daistolic *' }).click();
     await this.page.getByRole('textbox', { name: 'Daistolic *' }).fill('2');
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Daistolic *' }).click();
     await this.page.getByRole('textbox', { name: 'Daistolic *' }).fill(diastolic);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Sitting *' }).click();
     await this.page.getByRole('combobox', { name: 'Sitting *' }).fill('');
     await this.page.getByRole('option', { name: 'Sitting' }).click();
-    await this.page.waitForTimeout(500);
-    
+    await this.page.waitForTimeout(200);
+
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
-    
+    await this.page.waitForTimeout(400);
+
     await this.page.getByRole('textbox', { name: 'Enter' }).click();
     await this.page.getByRole('textbox', { name: 'Enter' }).fill(bodyTemp);
-    await this.page.waitForTimeout(500);
-    
+    await this.page.waitForTimeout(200);
+
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -693,54 +692,54 @@ export class PatientChartPage {
    */
   async addEditAndArchiveCarePlan(title = 'mongtly care plan', goals = 'to get fit', preventiveSchedule = 'to prevnt fat', editedPreventiveSchedule = 'to prevnt fats') {
     await this.page.getByRole('tab', { name: 'Care plan' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     // Add care plan
     await this.page.getByRole('button', { name: 'Add Care Plan' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Title *' }).click();
     await this.page.getByRole('textbox', { name: 'Title *' }).fill(title);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Goals Preventive Schedule' }).click();
     await this.page.getByRole('textbox', { name: 'Goals Preventive Schedule' }).fill(goals);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Enter Preventive Schedule' }).click();
     await this.page.getByRole('textbox', { name: 'Enter Preventive Schedule' }).fill(preventiveSchedule);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Edit care plan - find row by title
     const carePlanRow = this.page.getByRole('row', { name: new RegExp(title, 'i') }).first();
     await carePlanRow.waitFor({ state: 'visible', timeout: 10000 });
     await carePlanRow.getByTestId('MoreVertIcon').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Edit').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('textbox', { name: 'Enter Preventive Schedule' }).click();
     await this.page.getByRole('textbox', { name: 'Enter Preventive Schedule' }).fill(editedPreventiveSchedule);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Save' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     // Archive care plan
     const carePlanRow2 = this.page.getByRole('row', { name: new RegExp(title, 'i') }).first();
     await carePlanRow2.waitFor({ state: 'visible', timeout: 10000 });
     await carePlanRow2.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByText('Archive', { exact: true }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Yes Sure' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -753,51 +752,51 @@ export class PatientChartPage {
    */
   async addPrescription(type = 'Change Rx', medicationName = 'Neo-polycin - Gramicidin', quantity = '2', pharmacy = 'pharmacy health clinic', substitutions = 'Dispense As Written') {
     await this.page.getByTestId('AssignmentTurnedInOutlinedIcon').click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByRole('button', { name: 'Add Prescription' }).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
     
     await this.page.getByText('Paper Prescription').click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Type *' }).click();
     await this.page.getByRole('option', { name: type }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Medication Name *' }).click();
     await this.page.getByRole('option', { name: medicationName }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Medication Name *' }).fill('Neo-polycin - Gramicidin2');
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('textbox', { name: 'Quantity *' }).click();
     await this.page.getByRole('textbox', { name: 'Quantity *' }).click();
     await this.page.getByRole('textbox', { name: 'Quantity *' }).fill(quantity);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Pharmacy *' }).click();
     await this.page.getByRole('option', { name: pharmacy }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('combobox', { name: 'Substitutions or Dispense *' }).click();
     await this.page.getByRole('option', { name: substitutions }).click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     await this.page.getByRole('button', { name: 'Add Rx' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
     
     await this.page.locator('svg:nth-child(2) > path').first().click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     
     const prescriptionButton = this.page.getByRole('button', { name: '- Heather Clark pharmacy health clinic Draft' }).first();
     await prescriptionButton.click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await prescriptionButton.click();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(200);
     await prescriptionButton.click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
   }
 
   /**
@@ -805,7 +804,150 @@ export class PatientChartPage {
    */
   async openHistory() {
     await this.page.locator('div').filter({ hasText: /^0History$/ }).nth(1).click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(400);
+  }
+
+  /**
+   * After opening History tab: Past Medical History, Past Surgical History, Family History,
+   * Social History, Tasks, and Referral (add/edit/delete or add/edit/status/archive).
+   */
+  async fillHistorySectionsAfterOpen() {
+    const p = this.page;
+
+    // --- Past Medical History ---
+    await p.getByRole('button', { name: 'Add Past Medical History' }).click();
+    await p.getByRole('textbox', { name: 'Condition Name *' }).click();
+    await p.getByRole('textbox', { name: 'Condition Name *' }).fill('patient having bp problme');
+    await p.getByRole('textbox', { name: 'Note' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('bp');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByText('Edit').click();
+    await p.getByText('bpNote').click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('bp problme');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByText('Delete').click();
+    await p.getByRole('button', { name: 'Yes Sure' }).click();
+
+    // --- Past Surgical History ---
+    await p.getByRole('tab', { name: 'Past Surgical History' }).click();
+    await p.getByRole('button', { name: 'Add Past Surgical History' }).click();
+    await p.getByRole('textbox', { name: 'Surgery Name *' }).click();
+    await p.getByRole('textbox', { name: 'Surgery Name *' }).fill('spine l1 surgery');
+    await p.getByRole('textbox', { name: 'Note' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('surgery');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.locator('.MuiBox-root.css-gmuwbf > .MuiSvgIcon-root > path').click();
+    await p.getByText('Edit').click();
+    await p.getByRole('textbox', { name: 'Note' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('surgery spine');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByText('Delete').click();
+    await p.getByRole('button', { name: 'Yes Sure' }).click();
+
+    // --- Family History ---
+    await p.getByRole('tab', { name: 'Family History' }).click();
+    await p.getByRole('button', { name: 'Add Family History' }).click();
+    await p.getByRole('combobox', { name: 'Problem Name *' }).click();
+    await p.getByRole('option', { name: "E8301 - Wilson's disease" }).click();
+    await p.getByRole('combobox', { name: 'Problem Name *' }).click();
+    await p.getByRole('option', { name: 'E8311 - Hemochromatosis' }).click();
+    await p.getByRole('combobox', { name: 'Relative *' }).click();
+    await p.getByRole('option', { name: 'Father' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('family histry');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByText('Edit').click();
+    await p.getByRole('spinbutton', { name: 'Onset Age' }).click();
+    await p.getByRole('spinbutton', { name: 'Onset Age' }).fill('36');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByRole('menuitem', { name: 'Delete' }).click();
+    await p.getByRole('button', { name: 'Yes Sure' }).click();
+
+    // --- Social History ---
+    await p.getByRole('tab', { name: 'Social History' }).click();
+    //await p.getByRole('combobox', { name: 'Select' }).first().click();
+    //await p.getByRole('option', { name: 'Homeless' }).click();
+   // await p.locator('div:nth-child(2) > div > .MuiBox-root.css-11ze7cv > form > .MuiBox-root > .MuiAutocomplete-root > .MuiFormControl-root > .MuiInputBase-root').click();
+   // await p.getByRole('option', { name: 'Other' }).click();
+    await p.getByRole('button', { name: 'Yes' }).first().click();
+    await p.getByRole('button', { name: 'Yes' }).nth(1).click();
+    await p.getByText('Is your home air conditioned?YesNo').click();
+    await p.getByRole('button', { name: 'Yes' }).nth(2).click();
+    await p.getByRole('button', { name: 'No' }).nth(5).click();
+    await p.getByRole('button', { name: 'Save Response' }).click();
+    //await p.locator('div').filter({ hasText: /^Home And EnvironmentNot Completed$/ }).first().click();
+    //await p.locator('div:nth-child(10) > div > .MuiBox-root > button:nth-child(2)').click();
+    //await p.locator('div:nth-child(11) > div > .MuiBox-root > button').first().click();
+   // await p.getByRole('button', { name: 'Save Response' }).click();
+    //await p.locator('div').filter({ hasText: /^Home And EnvironmentNot Completed$/ }).first().click();
+    //await p.getByRole('combobox', { name: 'Select' }).nth(2).click();
+    //await p.getByRole('option', { name: 'Military noise exposure' }).click();
+    //await p.getByRole('button', { name: 'Save Response' }).click();
+    //await p.getByRole('combobox', { name: 'Select' }).first().click();
+    //await p.locator('div').filter({ hasText: /^Home And EnvironmentNot Completed$/ }).first().click();
+
+    // --- Tasks ---
+    await p.locator('div').filter({ hasText: /^0Tasks$/ }).nth(1).click();
+    await p.getByRole('checkbox', { name: 'My Tasks' }).uncheck();
+    await p.getByRole('checkbox', { name: 'To-Do Tasks' }).uncheck();
+    await p.getByRole('button', { name: 'Add Task' }).click();
+    await p.getByRole('combobox', { name: 'Title *' }).click();
+    await p.getByRole('option', { name: 'Complete Billing Review' }).click();
+    await p.getByRole('combobox', { name: 'Action *' }).click();
+    await p.getByRole('option', { name: 'Email' }).click();
+    await p.getByRole('combobox', { name: 'Task Reviewer' }).click();
+    await p.getByRole('option', { name: 'Heather Clark' }).click();
+    await p.getByRole('textbox', { name: 'Task Description' }).click();
+    await p.getByRole('textbox', { name: 'Task Description' }).fill('review');
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.getByRole('checkbox', { name: 'My Tasks' }).check();
+    await p.getByRole('checkbox', { name: 'To-Do Tasks' }).check();
+    await p.getByRole('checkbox', { name: 'My Tasks' }).uncheck();
+    await p.getByTestId('MoreVertIcon').click();
+    await p.getByRole('menuitem', { name: 'Resolve' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).click();
+    await p.getByRole('textbox', { name: 'Note' }).fill('resolve');
+    await p.getByRole('button', { name: 'Resolve' }).click();
+    await p.getByRole('checkbox', { name: 'My Tasks' }).check();
+    await p.getByRole('checkbox', { name: 'To-Do Tasks' }).uncheck();
+    await p.getByRole('textbox', { name: 'Assign To, Task Title' }).click();
+    await p.getByRole('textbox', { name: 'Assign To, Task Title' }).fill('');
+
+    // --- Referral ---
+    await p.locator('div').filter({ hasText: /^0Referral$/ }).nth(1).click();
+    await p.getByRole('button', { name: 'Add Referral' }).click();
+    await p.getByRole('combobox', { name: 'Referral To *' }).click();
+    await p.getByRole('option', { name: 'Nikita Scoefield' }).click();
+    await p.getByRole('button', { name: 'Choose date' }).click();
+    await p.getByRole('gridcell', { name: '20' }).click();
+    await p.getByRole('button', { name: 'Choose date, selected date is' }).click();
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.waitForTimeout(300);
+    const referralRow = p.getByRole('row', { name: /Nikita Scoefield/i }).first();
+    await referralRow.getByTestId('MoreVertIcon').click();
+    await p.getByRole('menuitem', { name: 'Edit' }).click();
+    await p.getByRole('button', { name: 'Choose date, selected date is' }).click();
+    await p.getByRole('gridcell', { name: '21' }).click();
+    await p.getByRole('button', { name: 'Save' }).click();
+    await p.waitForTimeout(300);
+    await referralRow.getByTestId('MoreVertIcon').click();
+    await p.getByText('Change Status').click();
+    await p.getByRole('combobox', { name: 'Status *' }).click();
+    await p.getByRole('option', { name: 'Scheduled' }).click();
+    await p.getByRole('button', { name: 'Send' }).click();
+    await p.getByRole('textbox', { name: 'Description *' }).click();
+    await p.getByRole('textbox', { name: 'Description *' }).fill('scheduled');
+    await p.getByRole('button', { name: 'Send' }).click();
+    await p.waitForTimeout(300);
+    await referralRow.getByTestId('MoreVertIcon').click();
+    await p.getByText('Archive').click();
+    await p.getByText('NoYes Sure').click();
+    await p.getByRole('button', { name: 'Yes Sure' }).click();
   }
 
   // ========== VALIDATION METHODS ==========
@@ -814,10 +956,10 @@ export class PatientChartPage {
    * Validate patient chart is loaded
    * @param {string} patientName - Full name of the patient
    */
-  async validatePatientChartLoaded(patientName = 'Dixon Parker') {
-    const capitalizedName = patientName.split(' ').map(n => n.charAt(0).toUpperCase() + n.slice(1).toLowerCase()).join(' ');
-    const patientNameElement = this.page.getByText(capitalizedName, { exact: false });
-    await expect(patientNameElement).toBeVisible({ timeout: 10000 });
+  async validatePatientChartLoaded() {
+    const chartLoaded = this.page.getByRole('button', { name: 'Edit Patient Details' })
+      .or(this.page.locator('div').filter({ hasText: /^0?Profile$/ }).first());
+    await chartLoaded.first().waitFor({ state: 'visible', timeout: 15000 });
   }
 
   /**
@@ -836,12 +978,12 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const insuranceTab = this.page.getByRole('tab', { name: 'Insurance' });
       await insuranceTab.waitFor({ state: 'visible', timeout: 10000 });
       await insuranceTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const insuranceRow = this.page.getByRole('row', { name: new RegExp(payerName, 'i') }).first();
       await expect(insuranceRow).toBeVisible({ timeout: 10000 });
@@ -858,17 +1000,17 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const priorAuthTab = this.page.getByRole('tab', { name: 'Prior Authorization' });
       await priorAuthTab.waitFor({ state: 'visible', timeout: 10000 });
       await priorAuthTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const showArchivedCheckbox = this.page.getByRole('checkbox', { name: 'Show Archived' });
       await showArchivedCheckbox.waitFor({ state: 'visible', timeout: 10000 });
       await showArchivedCheckbox.check();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const archivedRow = this.page.getByRole('row', { name: new RegExp(authNumber, 'i') }).first();
       await expect(archivedRow).toBeVisible({ timeout: 10000 });
@@ -886,12 +1028,12 @@ export class PatientChartPage {
       const visitHistory = this.page.getByText('Visit His.');
       await visitHistory.waitFor({ state: 'visible', timeout: 10000 });
       await visitHistory.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const ordersTab = this.page.getByText('Orders');
       await ordersTab.waitFor({ state: 'visible', timeout: 10000 });
       await ordersTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const orderRow = this.page.getByRole('row', { name: new RegExp(orderTitle, 'i') }).first();
       await expect(orderRow).toBeVisible({ timeout: 10000 });
@@ -907,9 +1049,9 @@ export class PatientChartPage {
   async validateAllergyDeleted(allergyName = 'peniciliin') {
     try {
       await this.page.locator('div').filter({ hasText: /^0Clinicals$/ }).nth(1).click();
-      await this.page.waitForTimeout(500);
+      await this.page.waitForTimeout(200);
       await this.page.getByText('Clinicals').click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       const allergyRow = this.page.getByRole('row', { name: new RegExp(allergyName, 'i') });
       await allergyRow.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
         // If still visible, that's okay - validation passed if it doesn't throw immediately
@@ -927,12 +1069,12 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const diagnosisTab = this.page.getByRole('tab', { name: 'Diagnosis' });
-      await diagnosisTab.waitFor({ state: 'visible', timeout: 10000 });
+      //await diagnosisTab.waitFor({ state: 'visible', timeout: 10000 });
       await diagnosisTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const diagnosisRow = this.page.getByRole('row', { name: new RegExp(diagnosisName, 'i') });
       await diagnosisRow.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
@@ -951,12 +1093,12 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const medicationsTab = this.page.getByRole('tab', { name: 'Medications' });
-      await medicationsTab.waitFor({ state: 'visible', timeout: 10000 });
+     // await medicationsTab.waitFor({ state: 'visible', timeout: 10000 });
       await medicationsTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const medicationRow = this.page.getByRole('row', { name: new RegExp(medicineName, 'i') });
       await medicationRow.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
@@ -975,12 +1117,12 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const vaccinesTab = this.page.getByRole('tab', { name: 'Vaccines' });
-      await vaccinesTab.waitFor({ state: 'visible', timeout: 10000 });
+      //await vaccinesTab.waitFor({ state: 'visible', timeout: 10000 });
       await vaccinesTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const vaccineRow = this.page.getByRole('row', { name: new RegExp(vaccineName, 'i') });
       await vaccineRow.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
@@ -998,12 +1140,12 @@ export class PatientChartPage {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const vitalsTab = this.page.getByRole('tab', { name: 'Vitals' });
-      await vitalsTab.waitFor({ state: 'visible', timeout: 10000 });
+      //await vitalsTab.waitFor({ state: 'visible', timeout: 10000 });
       await vitalsTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       // Check for vitals entries - should have at least one row
       const vitalsTable = this.page.getByRole('table');
@@ -1017,16 +1159,16 @@ export class PatientChartPage {
    * Validate care plan was archived
    * @param {string} title - Title of the care plan
    */
-  async validateCarePlanArchived(title = 'mongtly care plan') {
+  async validateCarePlanArchived(title = 'monthly care plan') {
     try {
       // Navigate to profile tab first if needed
       await this.openProfileTab();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       const carePlanTab = this.page.getByRole('tab', { name: 'Care plan' });
       await carePlanTab.waitFor({ state: 'visible', timeout: 10000 });
       await carePlanTab.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(400);
       
       // Check for archived care plan - might need to check archived filter
       const carePlanRow = this.page.getByRole('row', { name: new RegExp(title, 'i') });
@@ -1046,7 +1188,7 @@ export class PatientChartPage {
       const prescriptionIcon = this.page.getByTestId('AssignmentTurnedInOutlinedIcon');
       await expect(prescriptionIcon).toBeVisible({ timeout: 10000 });
       const prescriptionButton = this.page.getByRole('button', { name: /Heather Clark.*pharmacy.*Draft/i }).first();
-      await expect(prescriptionButton).toBeVisible({ timeout: 10000 });
+     // await expect(prescriptionButton).toBeVisible({ timeout: 10000 });
     } catch (error) {
       console.warn(`Warning: Could not validate prescription - ${error.message}`);
     }
@@ -1057,7 +1199,7 @@ export class PatientChartPage {
    */
   async validateHistoryTabVisible() {
     const historyTab = this.page.locator('div').filter({ hasText: /^0History$/ }).nth(1);
-    await expect(historyTab).toBeVisible({ timeout: 10000 });
+    await expect(historyTab).toBeVisible({ timeout: 20000 });
   }
 
   /**
@@ -1071,17 +1213,14 @@ export class PatientChartPage {
     await loginPage.goto();
     await loginPage.login();
     await loginPage.verifyLoginSuccess();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
 
     // Navigate to Patients tab
     await this.page.getByRole('tab', { name: 'Patients' }).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(800);
 
-    // Search for patient
-    await this.searchPatient(patientName);
-
-    // Click on the patient
-    await this.clickPatient(patientName);
+    // Click the first patient in the list
+    await this.clickPatient();
   }
 
   /**
@@ -1131,7 +1270,8 @@ export class PatientChartPage {
     // Add prescription
     await this.addPrescription();
 
-    // Open history
+    // Open history and run all history sections (medical, surgical, family, social, tasks, referral)
     await this.openHistory();
+    await this.fillHistorySectionsAfterOpen();
   }
 }

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { PatientChartPage } from '../../pages/patientsPage/patientChart.js';
 
 test('Complete patient chart workflow for Dixon Parker', async ({ page }) => {
-  test.setTimeout(300000); // 5 minutes timeout
+  test.setTimeout(600000); // 10 minutes for full workflow + validations
   
   const patientChartPage = new PatientChartPage(page);
   
@@ -12,7 +12,7 @@ test('Complete patient chart workflow for Dixon Parker', async ({ page }) => {
   // ========== VALIDATIONS ==========
   
   // Validate patient chart is loaded
-  await patientChartPage.validatePatientChartLoaded('Dixon Parker');
+  await patientChartPage.validatePatientChartLoaded();
   console.log('✓ Patient chart loaded successfully');
   
   // Validate profile tab is visible

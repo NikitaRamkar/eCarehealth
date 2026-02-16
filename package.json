@@ -4,7 +4,11 @@
   "type": "module",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:patient-chart": "playwright test tests/regression/patient_chart.spec.js",
+    "test:patient-chart:headed": "playwright test tests/regression/patient_chart.spec.js --headed",
+    "test:patient-chart:debug": "playwright test tests/regression/patient_chart.spec.js --debug"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
